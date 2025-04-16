@@ -221,7 +221,6 @@ from torch.distributed import init_process_group, destroy_process_group
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
 ddp = int(os.environ.get('RANK', -1)) != 1
-os.environ['OMP_NUM_THREADS'] = '1'
 if ddp:
     assert torch.cuda.is_available(), "DDP requires CUDA"
     init_process_group(backend='nccl')
@@ -261,13 +260,15 @@ if master_process:
     print(f"Total desired batch size: {total_batch_size}")
     print(f"=> calculated grad accum steps: {grad_accum_steps}")
 
-
+print("I'm GPU", ddp_rank)
+import sys;sys.exit(0)
 train_loader = DataLoaderLite(B=B, T=T, process_rank=ddp_rank, num_processes=ddp_world_size)
 torch.set_float32_matmul_precision('medium')
 # get logits
 model = GPT(GPTConfig(vocab_size=50304))
 model.to(device)
 model = torch.compile(model)
+print(f"Is dpp {ddp}")
 if ddp:
     model = DDP(model, device_ids=[ddp_local_rank])
 raw_model = model.module if ddp else model
