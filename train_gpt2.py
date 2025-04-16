@@ -220,7 +220,7 @@ import os
 from torch.distributed import init_process_group, destroy_process_group
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
-ddp = int(os.environ.get('RANK', -1)) != 1
+ddp = int(os.environ.get('RANK', -1)) != -1
 if ddp:
     assert torch.cuda.is_available(), "DDP requires CUDA"
     init_process_group(backend='nccl')
