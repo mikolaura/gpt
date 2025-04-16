@@ -196,7 +196,7 @@ class DataLoaderLite:
         self.T = T
         self.process_rank = process_rank
         self.num_processes = num_processes
-        with open('/kaggle/working/gpt/input.txt', 'r') as f:  
+        with open('gpt/input.txt', 'r') as f:  
             text = f.read()
         enc = tiktoken.get_encoding("gpt2") 
         tokens = enc.encode(text)
