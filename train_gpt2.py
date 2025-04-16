@@ -259,8 +259,8 @@ grad_accum_steps = total_batch_size // (B * T * ddp_world_size)
 if master_process:
     print(f"Total desired batch size: {total_batch_size}")
     print(f"=> calculated grad accum steps: {grad_accum_steps}")
-
-print("I'm GPU", ddp_rank)
+if ddp:
+    print("I'm GPU", ddp_rank)
 import sys;sys.exit(0)
 train_loader = DataLoaderLite(B=B, T=T, process_rank=ddp_rank, num_processes=ddp_world_size)
 torch.set_float32_matmul_precision('medium')
