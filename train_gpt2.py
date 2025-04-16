@@ -252,7 +252,7 @@ if torch.cuda.is_available():
     torch.cuda.empty_cache()
     # memory_stats()
 total_batch_size = 524288
-B = 4
+B = 12
 T = 1024
 assert total_batch_size % (B * T * ddp_world_size) == 0, f"total_batch_size: {total_batch_size} must be divisible by B*T * ddp world size: {B*T* ddp_world_size}"
 grad_accum_steps = total_batch_size // (B * T * ddp_world_size)
