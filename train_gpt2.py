@@ -243,6 +243,8 @@ else:
         device = 'mps'
 
     print(f'using device: {device}')
+
+device_type = "cuda" if device.startswith("cuda") else "cpu"
 torch.manual_seed(1337)
 if torch.cuda.is_available():
     torch.cuda.manual_seed(1337)
@@ -285,7 +287,7 @@ def get_lr(it):
     coeff = 0.5 * (1 + math.cos(math.pi * decay_ration))
     return min_lr + (max_lr - min_lr) * coeff
 
-optimizer= raw_model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device_type=device)
+optimizer= raw_model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device_type=device_type)
 
 
 for step in range(max_steps):
