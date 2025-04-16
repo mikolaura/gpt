@@ -196,7 +196,7 @@ class DataLoaderLite:
         self.T = T
         self.process_rank = process_rank
         self.num_processes = num_processes
-        with open('input.txt', 'r') as f:  
+        with open('/kaggle/working/gpt/input.txt', 'r') as f:  
             text = f.read()
         enc = tiktoken.get_encoding("gpt2") 
         tokens = enc.encode(text)
@@ -252,7 +252,7 @@ if torch.cuda.is_available():
         print(torch.cuda.memory_allocated()/1024**2)
         print(torch.cuda.memory_cached()/1024**2)
     torch.cuda.empty_cache()
-    memory_stats()
+    # memory_stats()
 total_batch_size = 524288
 B = 8
 T = 1024
