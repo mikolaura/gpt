@@ -223,7 +223,6 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
 ddp = int(os.environ.get('RANK', -1)) != 1
 
-os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'expandable_segments:True'
 if ddp:
     assert torch.cuda.is_available(), "DDP requires CUDA"
     init_process_group(backend='nccl')
@@ -254,7 +253,7 @@ if torch.cuda.is_available():
     torch.cuda.empty_cache()
     # memory_stats()
 total_batch_size = 524288
-B = 8
+B = 4
 T = 1024
 assert total_batch_size % (B * T * ddp_world_size) == 0, f"total_batch_size: {total_batch_size} must be divisible by B*T * ddp world size: {B*T* ddp_world_size}"
 grad_accum_steps = total_batch_size // (B * T * ddp_world_size)
@@ -271,6 +270,7 @@ model.to(device)
 model = torch.compile(model)
 if ddp:
     model = DDP(model, device_ids=[ddp_local_rank])
+raw_model = model.module if ddp else model
 # logits, loss = model(x, y)
 max_lr = 6e-4
 min_lr = max_lr * 0.1
@@ -286,7 +286,7 @@ def get_lr(it):
     coeff = 0.5 * (1 + math.cos(math.pi * decay_ration))
     return min_lr + (max_lr - min_lr) * coeff
 
-optimizer= model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device_type=device)
+optimizer= raw_model.configure_optimizers(weight_decay=0.1, learning_rate=6e-4, device_type=device)
 
 
 for step in range(max_steps):
