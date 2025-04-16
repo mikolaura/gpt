@@ -221,7 +221,7 @@ from torch.distributed import init_process_group, destroy_process_group
 from torch.nn.parallel import DistributedDataParallel as DDP
 import torch.distributed as dist
 ddp = int(os.environ.get('RANK', -1)) != 1
-
+os.environ['OMP_NUM_THREADS'] = '1'
 if ddp:
     assert torch.cuda.is_available(), "DDP requires CUDA"
     init_process_group(backend='nccl')
@@ -229,6 +229,7 @@ if ddp:
     ddp_local_rank = int(os.environ['LOCAL_RANK'])
     ddp_world_size = int(os.environ['WORLD_SIZE'])
     device = f'cuda:{ddp_local_rank}'
+    print(device)
     torch.cuda.set_device(device)
     master_process = ddp_rank == 0
 else:
