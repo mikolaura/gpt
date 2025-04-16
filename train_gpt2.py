@@ -208,10 +208,9 @@ class DataLoaderLite:
     def next_batch(self):
         B,T = self.B, self.T
         buf = self.tokens[self.current_position:self.current_position + B*T + 1]
-        self.current_position += B*T*self.num_processes
         x = (buf[:-1]).view(B,T)
         y = (buf[1:]).view(B,T)
-        self.current_position += B*T
+        self.current_position += B*T*self.num_processes
 
         if self.current_position + (B*T*self.num_processes+1) >= len(self.tokens):
             self.current_position = self.B*self.T*self.process_rank
